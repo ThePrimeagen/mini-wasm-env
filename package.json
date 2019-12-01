@@ -1,0 +1,43 @@
+{
+  "name": "mini-wasm-env",
+  "version": "1.0.0",
+  "description": "When full wasms just wont due",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack -d",
+    "watch": "webpack -d --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThePrimeagen/mini-wasm-env.git"
+  },
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "keywords": [],
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/ThePrimeagen/mini-wasm-env/issues"
+  },
+  "homepage": "https://github.com/ThePrimeagen/mini-wasm-env#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "node-c-parser": "^1.0.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@types/node": "^12.12.14",
+    "babel-loader": "^8.0.6",
+    "copy-webpack-plugin": "^5.0.5",
+    "dotenv-webpack": "^1.7.0",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  }
+}

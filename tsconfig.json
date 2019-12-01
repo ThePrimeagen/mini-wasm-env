@@ -1,0 +1,14 @@
+{
+    "include": ["source/js"],
+    "compilerOptions": {
+        "outDir": "./bin/",
+        "sourceMap": true,
+        "noImplicitAny": false,
+        "lib": ["es6", "dom"],
+        "module": "es6",
+        "target": "es6",
+        "esModuleInterop": true,
+        "allowJs": false
+    }
+}
+
