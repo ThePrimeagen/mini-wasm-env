@@ -11,23 +11,45 @@
 #define true 1
 #endif
 
+#if !defined(PRINT_DEBUG)
+#define PRINT_DEBUG true
+#endif
+
+#if !__has_builtin(__builtin_wasm_memory_grow)
+#define __builtin_wasm_memory_grow(v, k) false
+#endif
+
+#if !__has_builtin(__builtin_wasm_memory_size)
+#define __builtin_wasm_memory_size(v) false
+#endif
+
 extern void* getStartOfHeapPtr();
-extern void* getPageOfMemory();
+extern int getStartOfHeapPtr2();
+extern int resetMemoryGlobals();
 
-// TODO: QUickly write a hack ass malloc
+// TODO: Quickly write a hack ass malloc
+// 64KB
 typedef struct MemoryBlock {
-    struct MemoryBlock* next;
-    struct MemoryBlock* prev;
+    unsigned short length;
+    unsigned short firstFree;
+    unsigned short blockSize;
 
-    int size;
-    char free;
+    // the linked list of blocks of the same size
+    struct MemoryBlock *prev;
+    struct MemoryBlock *next;
 
     // WHAT ELSE
     // TYPESCRIPT AUTO GENERATION
-    char mem[1]; // Assuming everything is 1 byte for length.
+    unsigned char* blockStart;
+    unsigned char flags[1]; // Assuming everything is 1 byte for length.
 } MemoryBlock;
+
+typedef struct MemoryPages {
+    struct MemoryBlock *smallBlocks;
+    struct MemoryBlock *largeBlocks;
+    struct MemoryBlock *varBlocks;
+} MemoryPages;
 
 void* malloc(unsigned long size);
 void free(void *ptr);
-void mallocNextPage();
 

@@ -4,6 +4,7 @@ llc-8 -march=wasm32 -filetype=obj playground.ll
 llc-8 -march=wasm32 -filetype=obj memory.ll
 wasm-ld-8 --export-all -o playground.wasm playground.o memory.o --no-entry --allow-undefined
 rm *.ll *.o
+rm ../static/*
 cd ..
 npm run build
 
