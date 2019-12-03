@@ -35,7 +35,6 @@ typedef struct MemoryBlock {
     unsigned short blockSize;
 
     // the linked list of blocks of the same size
-    struct MemoryBlock *prev;
     struct MemoryBlock *next;
 
     // WHAT ELSE
@@ -44,11 +43,16 @@ typedef struct MemoryBlock {
     unsigned char flags[1]; // Assuming everything is 1 byte for length.
 } MemoryBlock;
 
-typedef struct MemoryPages {
+typedef struct MallocMemory {
     struct MemoryBlock *smallBlocks;
     struct MemoryBlock *largeBlocks;
     struct MemoryBlock *varBlocks;
-} MemoryPages;
+} MallocMemory;
+
+typedef struct MemoryPageList {
+    struct MemoryPageList* next;
+    void* block;
+} MemoryPageList;
 
 void* malloc(unsigned long size);
 void free(void *ptr);

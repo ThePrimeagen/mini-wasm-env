@@ -44,6 +44,17 @@ async function init() {
         console.log(getString(ptr));
     }
 
+    function printRegion(namePtr, ptr, length) {
+        console.log(getString(namePtr), buffer8.slice(ptr, ptr + length));
+    }
+
+    // @ts-ignore
+    window.printRegion = printRegion;
+    // @ts-ignore
+    window.printRegionPtr = function(ptr, length) {
+        console.log(buffer8.slice(ptr, ptr + length));
+    };
+
     const env = {
         /**
          * needed.  As we adjust memory the js can become out of date.
@@ -110,6 +121,8 @@ async function init() {
         printi(numberToPrint) {
             console.log(numberToPrint);
         },
+
+        printRegion,
 
         table,
         memory,
