@@ -129,10 +129,17 @@ async function init() {
     };
 
     // @ts-ignore
-    const module = await WebAssembly.instantiate(bytes, {
-        env
-    }) as WebAssemblyModule;
+    const info = { env };
 
+    async function createWASM(imports) {
+        // @ts-ignore
+        return WebAssembly.
+            instantiate(bytes, info) as WebAssemblyModule;
+    }
+
+    const module = await createWASM(info);
+    const m2 = await createWASM({env: info.env, imports: {memory}});
+    const m3 = await createWASM({env: info.env, exports: {memory}});
     const { instance } = module;
     resetMemoryGlobals();
 

@@ -1,7 +1,6 @@
 #include "memory.h"
 
 const int PAGE_SIZE = 1024 * 64;
-
 const int SMALL_BLOCK = 8;
 const int LARGE_BLOCK = 16;
 const int VAR_BLOCK = 64;
@@ -132,6 +131,7 @@ void mallocNextPage() {
 void printFreeStuff(struct MemoryBlock* head, int idx, unsigned char offset) {
 
     printPtr("Flags", head->flags);
+    printci("blockLength", head->length);
     printci("Checking flag", idx);
     printci("Offset", offset);
     printci("flagValue", head->flags[idx]);
@@ -153,7 +153,7 @@ void setNextFreeFlag(struct MemoryBlock* block, int currPos) {
         offset = 7 - (currPos % 8);
 
 #if PRINT_DEBUG
-        println("#setNextFreeFlag");
+        printci("#setNextFreeFlag", currPos);
         printFreeStuff(block, idx, offset);
 #endif
 
@@ -163,7 +163,9 @@ void setNextFreeFlag(struct MemoryBlock* block, int currPos) {
 }
 
 bool hasFree(struct MemoryBlock* block) {
-    return block->firstFree < block->blockSize;
+    printci("#hasFree", block->length);
+    printci("#hasFree", block->firstFree);
+    return block->firstFree < block->length;
 }
 
 void* malloc(unsigned long size) {
@@ -200,16 +202,6 @@ void* malloc(unsigned long size) {
 #endif
     }
 
-    while (!hasFree(head)) {
-
-        // Allocate a new page.
-        if (head->next == NULL) {
-            head->next = createMemoryBlock(blockSize);
-        }
-
-        head = head->next;
-    }
-
     // Do something?  Eh?  Trap^^^L#___
     if (head == NULL) {
         return NULL;
@@ -220,15 +212,24 @@ void* malloc(unsigned long size) {
     do {
         currPos = head->firstFree;
 
-        if (currPos >= head->length) {
+#if PRINT_DEBUG
+        println("#malloc");
+#endif
+        if (!hasFree(head)) {
+
+#if PRINT_DEBUG
+            println("#malloc does not have any free available, creating new block.");
+#endif
+            // Allocate a new page.
+            if (head->next == NULL) {
+                head->next = createMemoryBlock(blockSize);
+            }
+
             head = head->next;
             continue;
         }
 
-#if PRINT_DEBUG
-        println("#malloc");
-#endif
-        // Harder case
+        // Harder case, and not done yet
         if (blockSize == VAR_BLOCK) {
 
             // TODO: REMOVE RIGHT AWAY.
@@ -285,12 +286,14 @@ void* malloc(unsigned long size) {
 
         // Way easier
         else {
+
             // use this atom
             int idx = currPos / 8;
             unsigned char offset = 7 - (currPos % 8);
 
 #if PRINT_DEBUG
-        printFreeStuff(head, idx, offset);
+            printci("atom index", currPos);
+            printFreeStuff(head, idx, offset);
 #endif
             head->flags[idx] = (head->flags[idx] & (0xFF ^ (FREE << offset)));
             ptr = head->blockStart + currPos * head->blockSize;
@@ -374,7 +377,4 @@ void free(void* ptr) {
     printci("flagSettingOffset", flagOffset);
 #endif
 }
-
-
-
 
